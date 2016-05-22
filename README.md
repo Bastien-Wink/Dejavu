@@ -1,2 +1,1 @@
-# Facebook feed cleaner
 # FacebookFeedCleaner

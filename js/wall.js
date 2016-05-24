@@ -1,10 +1,3 @@
-/*
-
-This script be improved by removing ellement once they pass the float-line instead of on-arrive
-Otherwise we skip activities with might have not been seen yet (bellow float line)
-
-*/
-
 function setVisibleAsSeen() {
 
     chrome.storage.local.get(['activityIds'], function(result) {
@@ -50,11 +43,11 @@ function hideIfSeen(element, activityIds, hideSeen) {
             count: countHidden
         });
 
-        if (hideSeen == true) {
+        if (hideSeen != false) {
             element.css("display", "none");
         }
     } else {
-        console.log("Not seen" + element.attr("data-dedupekey"))
+        console.log("Not seen: " + element.attr("data-dedupekey"))
     }
 }
 
@@ -65,6 +58,8 @@ chrome.runtime.sendMessage({
 });
 //Retreive activityIds from localed storage
 chrome.storage.local.get(['activityIds', 'hideSeen'], function(result) {
+
+    console.log("hideSeen: " + result.hideSeen)
 
     result.activityIds = result.activityIds;
     if (result.activityIds instanceof Array == false)

@@ -1,19 +1,17 @@
 $("button#reset").on("click", function() {
-    chrome.storage.local.set({
-        'activityIds': new Array
-    }, function() {
-        alert('Done !');
-    });
+    chrome.storage.local.clear(function() {
+        alert('Voila !');
+    })
 });
 
 $("button#feed").on("click", function() {
-      window.open('https://www.facebook.com','_blank');
+    window.open('https://www.facebook.com', '_blank');
 });
 
 chrome.storage.local.get(['hideSeen'], function(result) {
-    if (result.hideSeen == true) {
+
+    if (result.hideSeen != false)
         $("input#hideSeen").prop('checked', true);
-    }
 
     $("input#hideSeen").on("change", function() {
 
@@ -24,7 +22,6 @@ chrome.storage.local.get(['hideSeen'], function(result) {
         chrome.tabs.executeScript({
             code: 'if(window.location.hostname == "www.facebook.com"){ location.reload() };'
         });
-        window.close();
     });
 
 });

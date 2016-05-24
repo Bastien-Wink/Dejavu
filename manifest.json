@@ -11,7 +11,7 @@
     },
     "background": {
         "persistent": false,
-        "scripts": ["background.js"]
+        "scripts": ["js/background.js"]
     },
     "browser_action": {
         "default_title": "Hidden count",
@@ -19,6 +19,6 @@
     },
     "content_scripts": [{
         "matches": ["https://www.facebook.com/"],
-        "js": ["node_modules/jquery/dist/jquery.min.js", "node_modules/arrive/minified/arrive.min.js", "common.js", "wall.js"]
+        "js": ["node_modules/jquery/dist/jquery.min.js", "node_modules/arrive/minified/arrive.min.js", "js/common.js", "js/wall.js"]
     }]
 }

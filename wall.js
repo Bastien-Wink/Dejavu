@@ -5,16 +5,43 @@ Otherwise we skip activities with might have not been seen yet (bellow float lin
 
 */
 
-// scrollLoad();
-window.scrollTo(0, document.body.scrollHeight);
-window.scrollTo(0, 0);
+function setVisibleAsSeen() {
 
-function manageActivity(element, result) {
+    chrome.storage.local.get(['activityIds'], function(result) {
+
+        result.activityIds = result.activityIds;
+        if (result.activityIds instanceof Array == false)
+            result.activityIds = new Array;
+
+        $("._5jmm:not(.seenSet)").filter(":onScreen").each(function() {
+            console.log("Set as seen : " + $(this).attr("data-dedupekey"));
+
+            //Mark the activity as seen
+            result.activityIds.unshift($(this).attr("data-dedupekey"));
+
+            // console.log(result.activityIds.length + " activities saved : " + result.activityIds);
+
+            $(this).addClass("seenSet");
+        });
+
+        //Only keep recent elements to save storage
+        if (result.activityIds.length >= 500) {
+            result.activityIds.length = 500;
+        }
+
+        chrome.storage.local.set({
+            'activityIds': result.activityIds
+        });
+    });
+
+}
+
+function hideIfSeen(element, activityIds, hideSeen) {
     //Not sure why some elements don't have a key, let's skip them
     if (element.attr("data-dedupekey") == undefined)
         return;
 
-    if ($.inArray(element.attr("data-dedupekey"), result.activityIds) > -1) {
+    if ($.inArray(element.attr("data-dedupekey"), activityIds) > -1) {
         console.log(element.attr("data-dedupekey") + " Already seen, hiding it");
 
         countHidden = countHidden + 1;
@@ -27,21 +54,7 @@ function manageActivity(element, result) {
             element.css("display", "none");
         }
     } else {
-        console.log(element.attr("data-dedupekey") + " Not seen, saving it.")
-
-        //Mark the activity as seen
-        result.activityIds.unshift(element.attr("data-dedupekey"));
-
-        // console.log(result.activityIds.length + " activities saved : " + result.activityIds);
-
-        //Remove lastest ellement
-        if (result.activityIds.length >= 500) {
-            result.activityIds.length = 500;
-        }
-
-        chrome.storage.local.set({
-            'activityIds': result.activityIds
-        });
+        console.log("Not seen" + element.attr("data-dedupekey"))
     }
 }
 
@@ -51,9 +64,7 @@ chrome.runtime.sendMessage({
     count: countHidden
 });
 //Retreive activityIds from localed storage
-chrome.storage.local.get(['activityIds','hideSeen'], function(result) {
-
-    hideSeen = result.hideSeen;
+chrome.storage.local.get(['activityIds', 'hideSeen'], function(result) {
 
     result.activityIds = result.activityIds;
     if (result.activityIds instanceof Array == false)
@@ -61,12 +72,21 @@ chrome.storage.local.get(['activityIds','hideSeen'], function(result) {
 
     console.log("let's hide these : " + result.activityIds);
 
-    $("._5jmm").each(function() {
-        manageActivity($(this), result);
+    $(document).on("scroll", function() {
+        setVisibleAsSeen();
+    });
+
+
+    $('._5jmm').each(function() {
+        hideIfSeen($(this), result.activityIds, result.hideSeen);
     });
 
     $('body').arrive('._5jmm', function() {
-        manageActivity($(this), result);
+        hideIfSeen($(this), result.activityIds, result.hideSeen);
     });
-
 });
+
+//Css injection
+var node = document.createElement('style');
+node.innerHTML = ".seenSet ._5pcp::after {content:' - Seen'} ";
+document.body.appendChild(node);

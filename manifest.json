@@ -2,7 +2,7 @@
   "name": "Facebook feed cleaner",
   "version": "1.0",
   "manifest_version": 2,
-  "description": "Hide content you have already seen on Facebook's feed. Don't waste any more time scrolling seen stories.",
+  "description": "Hide content you have already seen on Facebook and Twitter",
   "permissions": [
     "activeTab",
     "storage",

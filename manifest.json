@@ -1,5 +1,5 @@
 {
-  "name": "Facebook feed cleaner",
+  "name": "Dejavu",
   "version": "1.0",
   "manifest_version": 2,
   "description": "Hide content you have already seen on Facebook and Twitter",
@@ -10,7 +10,7 @@
   ],
   "icons": {
     "16": "img/icon_16.png",
-    "48": "img/icon_48.png",
+    "32": "img/icon_32.png",
     "128": "img/icon_128.png"
   },
   "background": {

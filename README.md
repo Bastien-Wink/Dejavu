@@ -1,1 +1,1 @@
-# FacebookFeedCleaner
+# DejaVu for Facebook

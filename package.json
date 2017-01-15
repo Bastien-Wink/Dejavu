@@ -1,7 +1,7 @@
 {
-  "name": "facebookfeedcleaned",
+  "name": "DejaVu, hide watched posts on Facebook",
   "version": "1.0.0",
-  "description": "",
+  "description": "Hide content you have already seen on Facebook's feed. Don't waste any more time scrolling seen stories.",
   "main": "background.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

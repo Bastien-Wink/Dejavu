@@ -1,27 +1,35 @@
-$("button#reset").on("click", function() {
-    chrome.storage.local.clear(function() {
-        alert('Voila !');
-    })
+$("button#reset").on("click", function () {
+    chrome.storage.local.set({
+        'storyIds-facebook': new Array,
+        'storyIds-twitter': new Array
+    }, function () {
+        alert('Done !');
+    });
 });
 
-$("button#feed").on("click", function() {
-    window.open('https://www.facebook.com', '_blank');
-});
+$.each(['facebook', 'twitter'], function (key, service) {
 
-chrome.storage.local.get(['hideSeen'], function(result) {
-
-    if (result.hideSeen != false)
-        $("input#hideSeen").prop('checked', true);
-
-    $("input#hideSeen").on("change", function() {
-
-        chrome.storage.local.set({
-            'hideSeen': $(this).is(':checked')
-        });
-
-        chrome.tabs.executeScript({
-            code: 'if(window.location.hostname == "www.facebook.com"){ location.reload() };'
-        });
+    $("button#feed-" + service).on("click", function () {
+        window.open('https://www.' + this + '.com', '_blank');
     });
 
-});
+    chrome.storage.local.get(["storyIds-" + this], function (result) {
+
+        if (result["storyIds-" + service] != false)
+            $("input#active-" + service).prop('checked', true);
+
+        $("input#" + service).on("change", function () {
+
+            chrome.storage.local.set({
+                this: $(this).is(':checked')
+            });
+
+            chrome.tabs.executeScript({
+                code: 'if(window.location.hostname == "www.' + this + '.com"){ location.reload() };'
+            });
+        });
+
+    });
+
+})
+

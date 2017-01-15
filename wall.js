@@ -7,41 +7,41 @@ Otherwise we skip activities with might have not been seen yet (bellow float lin
 
 function setVisibleAsSeen() {
 
-    chrome.storage.local.get(['activityIds'], function(result) {
+    chrome.storage.local.get(['storyIds'], function(result) {
 
-        result.activityIds = result.activityIds;
-        if (result.activityIds instanceof Array == false)
-            result.activityIds = new Array;
+        result.storyIds = result.storyIds;
+        if (result.storyIds instanceof Array == false)
+            result.storyIds = new Array;
 
         $("._5jmm:not(.seenSet)").filter(":onScreen").each(function() {
             console.log("Set as seen : " + $(this).attr("data-dedupekey"));
 
             //Mark the activity as seen
-            result.activityIds.unshift($(this).attr("data-dedupekey"));
+            result.storyIds.unshift($(this).attr("data-dedupekey"));
 
-            // console.log(result.activityIds.length + " activities saved : " + result.activityIds);
+            // console.log(result.storyIds.length + " activities saved : " + result.storyIds);
 
             $(this).addClass("seenSet");
         });
 
         //Only keep recent elements to save storage
-        if (result.activityIds.length >= 500) {
-            result.activityIds.length = 500;
+        if (result.storyIds.length >= 500) {
+            result.storyIds.length = 500;
         }
 
         chrome.storage.local.set({
-            'activityIds': result.activityIds
+            'storyIds': result.storyIds
         });
     });
 
 }
 
-function hideIfSeen(element, activityIds, hideSeen) {
+function hideIfSeen(element, storyIds, hideSeen) {
     //Not sure why some elements don't have a key, let's skip them
     if (element.attr("data-dedupekey") == undefined)
         return;
 
-    if ($.inArray(element.attr("data-dedupekey"), activityIds) > -1) {
+    if ($.inArray(element.attr("data-dedupekey"), storyIds) > -1) {
         console.log(element.attr("data-dedupekey") + " Already seen, hiding it");
 
         countHidden = countHidden + 1;
@@ -63,14 +63,14 @@ chrome.runtime.sendMessage({
     type: "setCount",
     count: countHidden
 });
-//Retreive activityIds from localed storage
-chrome.storage.local.get(['activityIds', 'hideSeen'], function(result) {
+//Retreive storyIds from localed storage
+chrome.storage.local.get(['storyIds', 'hideSeen'], function(result) {
 
-    result.activityIds = result.activityIds;
-    if (result.activityIds instanceof Array == false)
-        result.activityIds = new Array;
+    result.storyIds = result.storyIds;
+    if (result.storyIds instanceof Array == false)
+        result.storyIds = new Array;
 
-    console.log("let's hide these : " + result.activityIds);
+    console.log("let's hide these : " + result.storyIds);
 
     $(document).on("scroll", function() {
         setVisibleAsSeen();
@@ -78,11 +78,11 @@ chrome.storage.local.get(['activityIds', 'hideSeen'], function(result) {
 
 
     $('._5jmm').each(function() {
-        hideIfSeen($(this), result.activityIds, result.hideSeen);
+        hideIfSeen($(this), result.storyIds, result.hideSeen);
     });
 
     $('body').arrive('._5jmm', function() {
-        hideIfSeen($(this), result.activityIds, result.hideSeen);
+        hideIfSeen($(this), result.storyIds, result.hideSeen);
     });
 });
 

@@ -10,23 +10,24 @@ $("button#reset").on("click", function () {
 $.each(['facebook', 'twitter'], function (key, service) {
 
     $("button#feed-" + service).on("click", function () {
-        window.open('https://www.' + this + '.com', '_blank');
+        window.open('https://www.' + service + '.com', '_blank');
     });
 
-    chrome.storage.local.get(["storyIds-" + this], function (result) {
+    chrome.storage.local.get(["active-" + service], function (result) {
 
-        if (result["storyIds-" + service] != false)
+        if (result["active-" + service] != false)
             $("input#active-" + service).prop('checked', true);
 
-        $("input#" + service).on("change", function () {
+        $("input#active-" + service).on("change", function () {
 
-            chrome.storage.local.set({
-                this: $(this).is(':checked')
-            });
+            result["active-" + service] = $(this).is(':checked');
+            chrome.storage.local.set(result);
 
             chrome.tabs.executeScript({
-                code: 'if(window.location.hostname == "www.' + this + '.com"){ location.reload() };'
+                code: 'if(window.location.hostname == "www.' + service + '.com" || window.location.hostname == "c' + service + '.com"){ location.reload() };'
             });
+
+
         });
 
     });

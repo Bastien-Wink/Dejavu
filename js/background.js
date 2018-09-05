@@ -5,7 +5,7 @@ chrome.browserAction.setBadgeBackgroundColor({
 chrome.browserAction.setBadgeBackgroundColor({color: "black"});
 
 chrome.runtime.onMessage.addListener(
-    function(message, sender, sendResponse) {
+    function (message, sender, sendResponse) {
         switch (message.type) {
             case "setCount":
                 chrome.browserAction.setBadgeText({

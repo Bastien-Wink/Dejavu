@@ -6,7 +6,6 @@ function setVisibleAsSeen() {
 
     chrome.storage.local.get(["storyIds-" + serviceName], function (result) {
 
-        result["storyIds-" + serviceName] = result["storyIds-" + serviceName];
         if (result["storyIds-" + serviceName] instanceof Array == false)
             result["storyIds-" + serviceName] = new Array;
 
@@ -60,7 +59,7 @@ function init() {
     });
 
     //Retrieve history and conf from local storage
-    chrome.storage.local.get(["storyIds-" + serviceName, serviceName], function (result) {
+    chrome.storage.local.get(["storyIds-" + serviceName, "active-"+serviceName], function (result) {
 
         console.log(serviceName + " conf: " + result["storyIds-" + serviceName])
 
@@ -72,12 +71,12 @@ function init() {
 
         //Hide loaded stories
         $(storyLocation).each(function () {
-            hideIfSeen($(this), result["storyIds-" + serviceName], result[serviceName]);
+            hideIfSeen($(this), result["storyIds-" + serviceName], result["active-"+serviceName]);
         });
 
         //Hide arriving stories
         $('body').arrive(storyLocation, function () {
-            hideIfSeen($(this), result["storyIds-" + serviceName], result[serviceName]);
+            hideIfSeen($(this), result["storyIds-" + serviceName], result["active-"+serviceName]);
         });
     });
 
